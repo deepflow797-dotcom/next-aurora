@@ -324,5 +324,7 @@ Both surfaces (full LyricsPanel 20sp + mini card 18sp) use the same effect;
 the mini card keeps its own rounded box but now shares the main list's
 #16181D surface + hairline border. `KaraokeLine`/`WordBlurLaw` deleted;
 `WordBlurLawTest` replaced by `WordWaveLawTest`.
-**Not verified in this sandbox** (no JDK/Gradle/Rust): compile is what CI
-`assembleDebug` will show.
+**Verified green in CI** (run `45021399562`): assembleDebug, assembleRelease,
+lint, unit tests — all SUCCESS; `aurora-apks` artifact (~30MB, debug +
+release) built. Visual on-device result still pending — no emulator in this
+sandbox.

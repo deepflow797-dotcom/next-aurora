@@ -68,10 +68,15 @@ middle at even size), and the kept `LyricWord.blurProgress` +
 Release-body wording updated (letter-wave rebuild).
 
 ## Verification status
-**Not verified in this sandbox** (no JDK/Gradle/Rust). `assembleDebug`
-CI run is the real gate — Kotlin compile of `WordWave.kt` + both call
-sites is the riskiest part (the slice-cache drawing math is subtle).
-Unit tests and lint run informational in CI. Audio output remains simulated.
+**Verified green in CI** — run [`45021399562`](https://github.com/deepflow797-dotcom/next-aurora/actions/runs/45021399562)
+(2026-11-22): `Assemble debug APK`, `Assemble release APK`, `Gradle lint`,
+`Gradle unit tests`, both APK artifacts — all SUCCESS. APKs are attached
+to the run as the `aurora-apks` artifact (debug + release,
+~30MB). Kotlin compile of `WordWave.kt` + both call sites passed, and the
+new `WordWaveLawTest` passed. Still unverified: on-device rendering — no
+Android emulator or device in this sandbox, so the actual visual
+result (Latin lift/glow, Arabic slice blit) is unverified until the user
+opens the APK. Audio output remains simulated.
 
 ## Known caveats
 - RTL wave words use the slice-blit method ( Arabic cannot be drawn

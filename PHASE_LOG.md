@@ -653,5 +653,7 @@ Done:
 - Docs: `BLUR_REBUILD.md` marked superseded; `LETTER_WAVE_REBUILD.md` added.
 - CI release-body text updated.
 
-Verification: NOT compiled in this sandbox (no JDK/Gradle/Rust). The CI
-`assembleDebug` run is the real gate. Audio output remains simulated.
+Verification: **green in CI** (run `45021399562`, 2026-11-22): assembleDebug,
+assembleRelease, lint, unit tests all SUCCESS; `aurora-apks` artifact
+built (~30MB, debug + release). On-device visual result pending (no
+emulator in sandbox). Audio output remains simulated.
