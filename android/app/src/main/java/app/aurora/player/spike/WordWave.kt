@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.aurora.player.LyricWord
 import kotlin.math.ceil
-import kotlin.math.maxOf
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -156,10 +156,7 @@ private fun bakeBitmap(
         this.typeface = Typeface.DEFAULT_BOLD
         this.color = color.toArgb()
         if (shadowBlur != null && shadowBlur > 0f) {
-            this.shadowColor = color.toArgb()
-            this.shadowBlur = shadowBlur
-            this.shadowOffsetX = 0f
-            this.shadowOffsetY = 0f
+            this.setShadowLayer(shadowBlur, 0f, 0f, color.toArgb())
         }
     }
     val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -187,7 +184,7 @@ private fun bakeCache(word: String, fontSizePx: Float, color: Color): WordCache 
         word, fontSizePx, baselineOffset, width, height, padPx,
         fontSizePx * WordWaveLaw.GLOW_R_MAX, color,
     )
-    val sliceW = maxOf(2, WordWaveLaw.SLICE_PX.roundToInt())
+    val sliceW = kotlin.math.max(2, WordWaveLaw.SLICE_PX.roundToInt())
     return WordCache(ink, glowMin, glowMax, width, height, sliceW, padPx)
 }
 
@@ -248,7 +245,10 @@ fun WordWaveLine(
                       else (size.width - totalWidth) / 2f
         val direction = if (isRtl) -1f else 1f
 
-        for ((_, (word, width)) in measured.withIndex()) {
+        for ((_, pair) in measured.withIndex()) {
+            val word = pair.first
+            val width = pair.second
+
             val drawX = if (isRtl) cursorX - width else cursorX
             val n = word.text.length
             val wave = WordWaveLaw.isWaveWord(n, word.endMs - word.startMs, medianMs)
@@ -265,7 +265,7 @@ fun WordWaveLine(
             } else {
                 val alpha = WordWaveLaw.plainAlpha(nowMs.toFloat(), word.startMs.toFloat())
                 paint.alpha = (alpha * 255f).toInt().coerceIn(0, 255)
-                paint.shadowBlur = 0f
+                paint.clearShadowLayer()
                 drawContext.canvas.nativeCanvas.drawText(word.text, drawX, baselineY, paint)
                 paint.alpha = 255
             }
@@ -307,16 +307,15 @@ private fun drawLatinWave(
         canvas.scale(st.sc, st.sc)
         paint.alpha = (st.lit * 255f).toInt().coerceIn(0, 255)
         if (st.ga > 0.01f) {
-            paint.shadowColor = color.copy(alpha = st.ga).toArgb()
-            paint.shadowBlur = glowPx
+            paint.setShadowLayer(glowPx, 0f, 0f, color.copy(alpha = st.ga).toArgb())
         } else {
-            paint.shadowBlur = 0f
+            paint.clearShadowLayer()
         }
         canvas.drawText(word.text[i].toString(), -(cells[i + 1] - cells[i]) / 2f, 0f, paint)
         canvas.restore()
     }
     paint.alpha = 255
-    paint.shadowBlur = 0f
+    paint.clearShadowLayer()
 }
 
 /** Arabic wave: per-slice drawing from pre-baked bitmaps. */
