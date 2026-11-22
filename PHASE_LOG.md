@@ -628,3 +628,30 @@ Done:
 Verification: **none possible in this sandbox** (no cargo/java/gradle).
 All of the above is unverified until the first CI run. Blur updates at
 the existing 200 ms poll rate on Android (stepped, not per-frame).
+
+## Letter-wave rebuild (2026-11-22, branch arena/ad95660f-next-aurora)
+
+User decisions: (1) replace the word-LEVEL BLUR law with the reference
+letter-wave effect — long (held) words lift/scale/glow letter by letter
+(Latin per letter, Arabic per slice), short words fade plainly; (2) the
+mini card under LYRICS gets the same effect and a background matching the
+main large-words list (same #16181D surface, hairline border), staying a
+separate box (not merged); (3) UI locked after that; then next phase.
+
+Done:
+- `spike/WordWave.kt`: `WordWaveLaw` (exact port of the reference demo:
+  bump/smooth/letterState/plainAlpha/isWaveWord/median), `WordCache`
+  (pre-baked ink/glowMin/glowMax bitmaps), `WordWaveLine` composable
+  (Latin per-letter draw with translate/scale/shadow; Arabic per-slice blit).
+- `MainActivity.kt`: active lyric line now renders via `WordWaveLine` (20sp).
+- `designsystem/Components.kt`: mini card (18sp) same effect; surface matches
+  the main list + 1dp hairline border; separate box; no-word-timings lines
+  fall back to plain dim text (same rule as the full panel).
+- Deleted: `spike/KaraokeLine.kt` (`WordBlurLaw`/`KaraokeLine`),
+  `preview_blur_mini_card.html`, `WordBlurLawTest.kt`.
+- Tests: `WordWaveLawTest.kt` (JVM) replacing the blur tests.
+- Docs: `BLUR_REBUILD.md` marked superseded; `LETTER_WAVE_REBUILD.md` added.
+- CI release-body text updated.
+
+Verification: NOT compiled in this sandbox (no JDK/Gradle/Rust). The CI
+`assembleDebug` run is the real gate. Audio output remains simulated.

@@ -1,6 +1,7 @@
 package app.aurora.player.designsystem
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,31 +15,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.aurora.player.LyricLine
 import app.aurora.player.Lyrics
-import app.aurora.player.spike.KaraokeLine
-import app.aurora.player.spike.WordBlurLaw
+import app.aurora.player.spike.WordWaveLine
 
 /**
- * Mini lyric preview card — Phase 2 of the word-blur rebuild.
+ * Mini lyric preview card — same letter-wave law as the full lyric line.
  *
  * The small glass-less card shown under the transport controls (liquid
  * glass was cancelled, so this is a plain dark surface card): it shows
- * the current line with the same word-level blur law as the full lyric
- * line ([KaraokeLine] / [WordBlurLaw]), and the next line dimmed below
- * it. Tapping the card opens the full lyrics (wired by the caller via
- * [onClick]); the queue affordance stays with the caller, as before.
+ * the current line with the same letter-wave effect as the full lyric
+ * line ([WordWaveLine]), and the next line dimmed below it. Tapping the
+ * card opens the full lyrics (wired by the caller via [onClick]); the
+ * queue affordance stays with the caller, as before.
  *
  * Differences from the full line, by design:
- * - `WORD_BLUR_MAX_PX = 8f` instead of `BLUR_MAX_PX = 14f`, because the
- *   card's type is smaller — the same law, a smaller maximum.
- * - `blurProgress = (nowMs - ws) / (we - ws)` per word, computed in
- *   [app.aurora.player.LyricWord.blurProgress] from the Rust word
- *   windows and the audio-clock `positionMs`.
+ * - Smaller type (18sp, vs 20sp in the full line) — same law, smaller text.
  * - RTL: [isRtl] comes from the paragraph direction of the lyric text
  *   (see `isRtlText` in MainActivity), not from the device locale, so an
  *   Arabic song in an English UI still lays out right-to-left.
@@ -61,7 +58,10 @@ fun AuroraLyricPreviewBox(
     val cardModifier = modifier
         .fillMaxWidth()
         .clip(shape)
-        .background(MaterialTheme.colorScheme.surface)
+        // Same surface as the main large-words list, plus a hairline
+        // border so the card reads as its own box without a heavy frame.
+        .background(MaterialTheme.colorScheme.surface, shape)
+        .border(1.dp, Color.White.copy(alpha = 0.12f), shape)
         .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
         .padding(horizontal = 16.dp, vertical = 12.dp)
 
@@ -86,23 +86,24 @@ fun AuroraLyricPreviewBox(
                         )
                     }
                     currentLine != null -> {
-                        KaraokeLine(
-                            words = currentLine.words.ifEmpty {
-                                listOf(
-                                    app.aurora.player.LyricWord(
-                                        text = currentLine.text,
-                                        activation = currentLine.activation,
-                                        startMs = currentLine.startMs,
-                                        endMs = currentLine.endMs,
-                                    )
-                                )
-                            },
-                            nowMs = nowMs,
-                            isRtl = isRtl,
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            maxBlurPx = WordBlurLaw.WORD_BLUR_MAX_PX,
-                        )
+                        if (currentLine.words.isNotEmpty()) {
+                            WordWaveLine(
+                                words = currentLine.words,
+                                nowMs = nowMs,
+                                isRtl = isRtl,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        } else {
+                            Text(
+                                text = currentLine.text,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                         nextLine?.let { next ->
                             Text(
                                 text = next.text,

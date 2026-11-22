@@ -46,10 +46,10 @@ data class LyricWord(
      * Word-level blur progress `0..1` at [nowMs]:
      * `((nowMs - startMs) / (endMs - startMs))`, clamped.
      *
-     * This is the single law shared by KaraokeLine (full line) and
-     * AuroraLyricPreviewBox (mini card). It is a pure function of the
-     * audio-clock position, so seeks and pauses stay correct: no UI timer
-     * is involved.
+     * Kept for callers that need the raw singing progress. The visible
+     * word effect (full line and mini card) uses WordWaveLaw instead —
+     * long words wave, short words fade plainly — and is a pure function
+     * of the audio-clock position, so seeks and pauses stay correct.
      */
     fun blurProgress(nowMs: Long): Float {
         if (endMs <= startMs) {

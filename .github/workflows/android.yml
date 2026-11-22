@@ -1,4 +1,4 @@
-# Aurora Player — Android CI (word-blur rebuild)
+# Aurora Player — Android CI (letter-wave rebuild)
 #
 # This workflow did not exist before: there was no way to build an APK
 # from GitHub, and the previous failure mode (`warningsAsErrors = true`
@@ -17,7 +17,7 @@
 #   - Push to this branch (or open a PR), wait for this workflow, then
 #     Actions → this run → Artifacts → `aurora-apks` → download the zip
 #     containing app-debug.apk and app-release.apk.
-#   - Or push a tag like `v0.2.0-blur` to also get a Release with the
+#   - Or push a tag like `v0.3.0-letter-wave` to also get a Release with the
 #     APKs attached.
 #   - Or run it manually: Actions → "Android CI" → Run workflow.
 #
@@ -252,7 +252,7 @@ jobs:
             android/app/build/outputs/apk/release/*.apk
           name: Aurora ${{ github.ref_name }}
           body: |
-            Aurora Player Android build (word-level blur rebuild).
+            Aurora Player Android build (letter-wave rebuild).
 
             - `app-debug.apk` — debug build, easiest to install for testing.
             - `app-release.apk` — release build (debug-signed, personal sideload).
@@ -260,4 +260,5 @@ jobs:
             Install on Android 8.0+ (arm64-v8a / x86_64): allow
             "install unknown apps" for your browser/file manager, then
             open the APK. The mini lyric card under the transport
-            controls shows each word blurred, sharpening as it is sung.
+            controls shows the letter-wave effect: long (held) words lift,
+            scale and glow letter by letter, short words fade in plainly.

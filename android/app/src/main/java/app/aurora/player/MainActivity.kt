@@ -50,8 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.aurora.player.designsystem.AuroraLyricPreviewBox
-import app.aurora.player.spike.KaraokeLine
-import app.aurora.player.spike.WordBlurLaw
+import app.aurora.player.spike.WordWaveLine
 
 /**
  * One screen: folder, library, transport.
@@ -300,15 +299,15 @@ private fun LyricsPanel(lyrics: Lyrics?, modifier: Modifier = Modifier) {
             else -> LazyColumn(state = state) {
                 items(lyrics.lines) { line ->
                     if (line.active && line.words.isNotEmpty()) {
-                        // Active line: word-level blur (KaraokeLine law,
-                        // BLUR_MAX_PX = 14f). Each word sharpens as it is sung.
-                        KaraokeLine(
+                        // Active line: letter-wave effect (long words wave,
+                        // short words fade plainly). Pure function of the
+                        // audio-clock position.
+                        WordWaveLine(
                             words = line.words,
                             nowMs = lyrics.positionMs,
                             isRtl = isRtlText(line.text),
                             fontSize = 20.sp,
                             color = MaterialTheme.colorScheme.onSurface,
-                            maxBlurPx = WordBlurLaw.BLUR_MAX_PX,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp),

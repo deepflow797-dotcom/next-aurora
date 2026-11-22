@@ -312,3 +312,17 @@ and a new GitHub Actions workflow that builds debug+release APKs as
 artifacts (lint warnings no longer fail the build). **Unverified:**
 nothing was compiled or run in this sandbox (no JDK/Gradle/Rust);
 first CI run is the real check. Audio output remains simulated.
+
+## Letter-wave rebuild (2026-11-22)
+
+See `LETTER_WAVE_REBUILD.md` for the full status. Summary: word-level blur
+was rejected by the user and replaced by the reference letter-wave law —
+long held words (n>=2, dur>=1400ms, >=2x the line median when 3+ words)
+lift/scale/glow letter by letter (Latin per letter, Arabic per 3px slice
+from pre-baked bitmaps), short words fade plainly (DIM 0.35 -> 1 over 250ms).
+Both surfaces (full LyricsPanel 20sp + mini card 18sp) use the same effect;
+the mini card keeps its own rounded box but now shares the main list's
+#16181D surface + hairline border. `KaraokeLine`/`WordBlurLaw` deleted;
+`WordBlurLawTest` replaced by `WordWaveLawTest`.
+**Not verified in this sandbox** (no JDK/Gradle/Rust): compile is what CI
+`assembleDebug` will show.

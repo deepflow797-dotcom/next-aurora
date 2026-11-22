@@ -1,3 +1,13 @@
+> **SUPERSEDED (2026-11-22)** — this document describes the word-LEVEL BLUR
+> design that the user rejected. The lyric effect is now the **letter-wave**
+> law (`spike/WordWave.kt`): long held words lift/scale/glow letter by letter
+> (Latin per letter, Arabic per slice), short words fade plainly. The blur
+> constants, stroke passes and `KaraokeLine` are gone; see
+> `LETTER_WAVE_REBUILD.md` for the current design and status. This file is
+> kept as the historical record of the 2026-11-19 rebuild, not as the live docs.
+
+---
+
 # Word-level blur rebuild — status (2026-11-19)
 
 Branch: `arena/45bdc33d-aurora` · Base: `13422ed` (initial commit) merged
